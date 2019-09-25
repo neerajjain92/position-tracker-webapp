@@ -1,6 +1,7 @@
 # PositionTrackerWebApp
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.2.
+This project monitors movements of vehicles whose co-ordinates are being published by [GPS Simulator](https://github.com/neerajjain92/vehicle-position-simulator)
+
 
 ## Development server
 
