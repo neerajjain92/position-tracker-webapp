@@ -21,26 +21,38 @@ export class MapComponent implements OnInit {
         {maxZoom: 18})
     ],
     zoom: 15,
-    center: latLng(17.4175339, 78.3440757)
+    // center: latLng(17.4175339, 78.3440757)
+    center: latLng(53.375564, -1.506785)
   };
 
   constructor(private mapService: MapService) {
   }
 
   ngOnInit() {
-    const newMarker = marker([17.4175339, 78.3440757],
-      {
-        icon: icon({
-          iconSize: [25, 41],
-          iconAnchor: [11, 41],
-          iconUrl: 'assets/marker-icon.png'
-        }),
-        title: 'Swiggy'
-      }).bindTooltip('Your Food is here', {permanent: false, offset: point({x: 0, y: 0})});
-    this.markers.push(newMarker);
+    this.mapService.subscription.subscribe(vehicle => {
+      if (vehicle === null) {
+        return;
+      }
 
-    this.loadGeoCoordinates();
+      const existingEntryInMarkers = this.markers.findIndex(existingMarker => existingMarker.options.title === vehicle.name);
 
+      if (existingEntryInMarkers === -1) {
+        const newMarker = marker([vehicle.lat, vehicle.lng],
+          {
+            icon: icon({
+              iconSize: [25, 41],
+              iconAnchor: [11, 41],
+              iconUrl: 'assets/marker-icon.png'
+            }),
+            title: vehicle.name
+          }).bindTooltip(vehicle.name, {permanent: true, offset: point({x: 0, y: 0})});
+        this.markers.push(newMarker);
+      } else {
+        this.markers[existingEntryInMarkers].setLatLng(latLng(vehicle.lat, vehicle.lng));
+      }
+    });
+
+    // this.loadGeoCoordinates();
   }
 
   onMapReady(map: Map) {
@@ -51,9 +63,9 @@ export class MapComponent implements OnInit {
     this.mapService.loadGeoCoordinates()
       .subscribe(
         (response) => {
-          console.log(response);
+          // console.log(response);
           this.coordinates = response['coordinates'];
-          this.animateVehicles();
+          // this.animateVehicles();
         },
         (error) => {
           console.log(error);
@@ -81,8 +93,8 @@ export class MapComponent implements OnInit {
       }
 
       if (!this.edgeCase) {
-        console.log('Moving to lat : ', this.coordinates[this.coordinateCounter].latitude,
-          ' and lng ', this.coordinates[this.coordinateCounter].longitude);
+        // console.log('Moving to lat : ', this.coordinates[this.coordinateCounter].latitude,
+        //   ' and lng ', this.coordinates[this.coordinateCounter].longitude);
         this.markers[0].setLatLng(latLng(this.coordinates[this.coordinateCounter].latitude,
           this.coordinates[this.coordinateCounter].longitude));
       }
