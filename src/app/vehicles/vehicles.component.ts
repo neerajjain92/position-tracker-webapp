@@ -36,7 +36,14 @@ export class VehiclesComponent implements OnInit {
   }
 
   focusVehicle(vehicle: Vehicle) {
-
+    // Let's deselect if clicked on same vehicle.
+    if (this.focusedVehicle === vehicle.name) {
+      this.focusedVehicle = null;
+      this.mapService.updateFocusedVehicle(null);
+    } else {
+      this.focusedVehicle = vehicle.name;
+      this.mapService.updateFocusedVehicle(vehicle);
+    }
   }
 
 }

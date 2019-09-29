@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {icon, latLng, Map, marker, Marker, point, tileLayer} from 'leaflet';
+import {icon, latLng, Map, marker, Marker, point, polyline, tileLayer} from 'leaflet';
 import {MapService} from './map.service';
 
 @Component({
@@ -15,6 +15,8 @@ export class MapComponent implements OnInit {
   shouldIncrement = true;
   markers: Marker[] = [];
   edgeCase = false;
+  focusedVehicle: string;
+  focusedVehicleHistory;
   options = {
     layers: [
       tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -50,6 +52,41 @@ export class MapComponent implements OnInit {
       } else {
         this.markers[existingEntryInMarkers].setLatLng(latLng(vehicle.lat, vehicle.lng));
       }
+    });
+
+    // Fly to the Focused Vehicle
+    this.mapService.focusedVehicle.subscribe(vehicle => {
+      if (vehicle === null) {
+        this.focusedVehicle = null;
+        return;
+      } else {
+        this.focusedVehicle = vehicle.name;
+        this.map.flyTo([vehicle.lat, vehicle.lng],
+          this.map.getZoom(), {
+            animate: true
+          });
+      }
+    });
+
+    // Show History for a Focused Vehicle
+    this.mapService.focusedVehicleHistory.subscribe(newHistory => {
+      if (newHistory === null) {
+        return;
+      }
+      if (this.focusedVehicleHistory) {
+        this.focusedVehicleHistory.remove(this.map);
+      }
+
+      const LatLng = [];
+      newHistory.forEach(history => {
+        const coordinate = [];
+        coordinate.push(history.lat);
+        coordinate.push(history.lng);
+        LatLng.push(coordinate);
+      });
+
+      this.focusedVehicleHistory = polyline(LatLng, {weight: 10, opacity: 0.5, color: 'red'});
+      this.focusedVehicleHistory.addTo(this.map);
     });
 
     // this.loadGeoCoordinates();
