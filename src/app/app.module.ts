@@ -13,7 +13,9 @@ import {InjectableRxStompConfig, RxStompService, rxStompServiceFactory} from '@s
 
 const stompConfig: InjectableRxStompConfig = {
   // Which server?
-  brokerURL: 'ws://127.0.0.1:8080/updates',
+  // brokerURL: 'ws://127.0.0.1:8080/updates',
+  // brokerURL: 'ws://192.168.99.104:30030/updates',
+  brokerURL: 'ws://' + window.location.hostname + ':' + window.location.port + '/api/updates',
 
   // Headers
   // Typical keys: login, passcode, host
