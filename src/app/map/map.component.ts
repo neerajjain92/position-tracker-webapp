@@ -23,8 +23,7 @@ export class MapComponent implements OnInit {
         {maxZoom: 18})
     ],
     zoom: 15,
-    // center: latLng(17.4175339, 78.3440757)
-    center: latLng(53.375564, -1.506785)
+    center: latLng(26.9124, 75.7873)
   };
 
   constructor(private mapService: MapService) {
